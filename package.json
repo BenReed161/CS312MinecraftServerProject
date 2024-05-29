@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "@pulumi/aws": "^6.37.1",
+    "@pulumi/command": "^0.11.1",
+    "@pulumi/pulumi": "^3.117.0",
+    "typescript": "^5.4.5"
+  }
+}
