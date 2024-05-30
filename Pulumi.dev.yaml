@@ -1,0 +1,4 @@
+config:
+  aws:region: us-west-2
+  pulumi-ansible-minecraft-server:privateKeyPath: minecraft-key
+  pulumi-ansible-minecraft-server:publicKeyPath: minecraft-key.pub
