@@ -52,5 +52,31 @@ const mcserverInstance = new aws.ec2.Instance("mcserver-instance", {
   associatePublicIpAddress: true,
 });
 
+//install python
+const updatePythonCmd = new command.remote.Command("updatePythonCmd", {
+    connection: {
+        host: mcserverInstance.publicIp,
+        port: 22,
+        user: "admin",
+        privateKey: privateKey,
+    },
+    create: `(sudo apt update || true)`,
+});
+
+//render the playbook
+const renderPlaybookCmd = new command.local.Command("renderPlaybookCmd", {
+    create: "cat playbook.yml | envsubst > playbook_rendered.yml"
+});
+
+//play the playbook
+const playAnsiblePlaybookCmd = new command.local.Command("playAnsiblePlaybookCmd", {
+    create: pulumi.interpolate`ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -u admin -i '${mcserverInstance.publicIp},' --private-key ${privateKeyPath} playbook_rendered.yml`,
+    }, {
+    dependsOn: [
+        renderPlaybookCmd,
+        updatePythonCmd
+    ],
+});
+
 export const publicIp = mcserverInstance.publicIp;
 export const publicDns = mcserverInstance.publicDns;
