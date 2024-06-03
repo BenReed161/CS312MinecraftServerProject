@@ -15,3 +15,11 @@ For Windows users not using a WSL instance can find it useful to use the CLI com
 `aws configure set <variable> "value"`  
 `aws configure set aws_access_key_id "ABC123"`  
 ## Overview
+
+
+## References
+* [Alexander Ulbrich's Wordpress Demo](https://github.com/adulbrich/demo-pulumi-wordpress-ec2/?tab=readme-ov-file)  
+* [Pulumi AWS Networking setup guide](https://www.pulumi.com/ai/answers/oW1vyw8e4Xi8dFD9Q552Df/creating-ec2-instances-with-aws-networking)  
+* [Ansible Documentation](https://docs.ansible.com/)  
+* [Pulumi Documentation](https://www.pulumi.com/docs/)  
+* Alexander Ulbrich's OSU Computer Science 312 class notes and resources page.  
