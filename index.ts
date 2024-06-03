@@ -15,6 +15,17 @@ const mcserverKeyPair = new aws.ec2.KeyPair("mcserver-keypair", {publicKey: publ
 
 const mcserverEC2size = config.get("mcserverEC2size") || "t3.medium";
 
+// Get the AMI for debian 12 image based on your region.
+// https://wiki.debian.org/Cloud/AmazonEC2Image/Bullseye
+const debian_ami = aws.ec2.getAmi({
+    owners: ["136693071363"], // Official owner id for debian
+    filters: [{
+        name: "name",
+        values: ["debian-12-amd64-20231013-1532"], //amd64
+    }],
+    mostRecent: true,
+});
+
 //JVM maximum and mimimum memory pool RAM allocation, defaults to 3G of mem
 const mcserverXMX = config.get("mcserverXMX") || "3072";
 const mcserverXMS = config.get("mcserverXMS") || "3072";
@@ -44,7 +55,7 @@ const securityGroup = new aws.ec2.SecurityGroup("mcserver-secgrp", {
 });
 
 const mcserverInstance = new aws.ec2.Instance("mcserver-instance", {
-  ami: "ami-0c2644caf041bb6de",
+  ami: debian_ami.then(debian_ami => debian_ami.id),
   instanceType: mcserverEC2size,
 
   keyName: mcserverKeyPair.id,
