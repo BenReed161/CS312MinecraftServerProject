@@ -15,6 +15,13 @@ For Windows users not using a WSL instance can find it useful to use the CLI com
 `aws configure set <variable> "value"`  
 `aws configure set aws_access_key_id "ABC123"`  
 ## Overview
+The goal of this project was to create an EC2 instance in AWS that ran a Minecraft server using infrastructure provisioning scripts. I chose to use Ansible and Pulumi, and followed a structure similar to Alexander Ulbrich's Wordpress demo (see References section). The idea is that there should be no interaction with the EC2 instance directly, meaning no ssh or use of the aws cli to directly interface with the instance. Instead I was tasked with setting up scripts to create and run the Minecraft server automatically with a single command. The server should also be restarted everytime the EC2 instance restarts to ensure that no sshing is required.  
+  
+I achieved this automation by creating a systemctl service file to load the minecraft server on start of the Debian instance. This creation and startup configuration is all handled by an Ansible playbook. The playbook also handles all other commands run on the remote, including installing Java and the Minecraft server jar file, as well as configuring the Minecraft server files. The core AWS management is handled by Pulumi which interfaces with AWS using the provided credentials and creates EC2, network, and keypair instances on your behalf through AWS. In my implementation I handed the specification of the instance type and the amount of RAM to be used for the service to the user. It is up to them to determine how much to provision on the budget they have.  
+  
+The defaults for the EC2 instance are detailed in the "How to launch" section.  
+  
+The user does not have the choice of OS however, I determined Debian as the best suited OS for this particular Minecraft server. Debian is highly compatible with most packages and has a long history of support behind it. It does not matter what region you choose the Debian AMI should be chosen correctly for you.  
 
 
 ## References
