@@ -17,6 +17,7 @@ const mcserverEC2size = config.get("mcserverEC2size") || "t3.medium";
 
 // Get the AMI for debian 12 image based on your region.
 // https://wiki.debian.org/Cloud/AmazonEC2Image/Bullseye
+// https://www.pulumi.com/ai/answers/493Zc8Z25H1SddFvuge5UN/managing-debian-repositories-with-ansible-in-python
 const debian_ami = aws.ec2.getAmi({
     owners: ["136693071363"], // Official owner id for debian
     filters: [{
