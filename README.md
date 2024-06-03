@@ -53,7 +53,7 @@ Before deploying the AWS Minecraft Server there are some initial configuration s
    The `publicIp` is what you connect with and put into your Minecraft client to connect.
    The `publicDNS` is just for your convenience, so that you can connect via SSH to check logs and access the minecraft server console.
 6. (Optional) If you're feeling adventurous you are free to edit the Ansible playbook or the Pulumi setup to fit your needs. Save your changes with a `pulumi up` and it will update the instance with any changes you make.
-7. When you're done with the server or screwed anything up at any part of the setup run:
+7. When you're done with the server or screwed anything up at any part of the setup, run:
    ```bash
    pulumi destroy # Will delete and destroy all allocated resources by this script.
    pulumi stack rm # Will completly remove the project stack associated with the Pulumi configuration.
