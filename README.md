@@ -23,6 +23,34 @@ The defaults for the EC2 instance are detailed in the "How to launch" section.
   
 The user does not have the choice of OS however, I determined Debian as the best suited OS for this particular Minecraft server. Debian is highly compatible with most packages and has a long history of support behind it. It does not matter what region you choose the Debian AMI should be chosen correctly for you.  
 
+## How to launch
+Clone the repo through the `git clone` command or through Github by downloading the zip.  
+Before deploying the AWS Minecraft Server there are some initial configuration steps you must adhere to.  
+1. Create a new pulumi stack with `pulumi stack init` in a command window. (Pulumi may ask you to login, or create an account if don't already have one)  
+2. Generate the key that will be used to login to the EC2 instance with the `ssh-keygen` command, this will create a private a public key on the local machine. (Never share private keys).
+   ```bash
+   ssh-keygen -f minecraft-key
+   ```
+3. Now to configure some AWS values through pulumi.  
+   ```bash
+   pulumi config set aws:region us-east-1 # any AWS region, a full list can viewed here: https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html
+   pulumi config set publicKeyPath minecraft-key.pub # The public key generated in the previous step
+   pulumi config set privateKeyPath minecraft-key # The private key generated in the previous step
+   ```
+4. (Optional) There are some additional values that can be changed as part of the setup, although they are not required.
+   ```bash
+   pulumi config set mcserverEC2size t3.large # defaults to t3.medium (4GB RAM)
+   pulumi config set mcserverXMX 4096 # Size in MB. The max RAM available for the JVM, defaults to 3072MB
+   pulumi config set mcserverXMS 4096 # Size in MB. The staring RAM available for the JVM, defaults to 3072MB
+   ```
+   **Note:** XMX and XMS, do not set these higher than the available EC2 instance RAM. It will crash the JVM. Ensure you have the correct settings before continuing and you do not over-provision resources.  
+   **Additonal tip:** Set XMX and XMS equal to each other, since this EC2 instance will only be a Minecraft server there is no need to start the server with a lower RAM than the max. It is also common to set the max near or to the maximum system RAM, I would recommend against this as it can cause system crashing, but it's up to you.
+5. Now that all the configuration steps are done can deploy the system by running `pulumi up`. This command starts the creation of all the resources needed to run the server.  
+   You will be prompted if you want to continue `Do you want to perform this update? yes` select 'yes' from the options. Now the update will begin.
+   This may take some time ~5 mins, so be patience.
+   Once the script completes it will spit out some DNS and IP information.
+   
+
 
 ## References
 * [Alexander Ulbrich's Wordpress Demo](https://github.com/adulbrich/demo-pulumi-wordpress-ec2/?tab=readme-ov-file)  
