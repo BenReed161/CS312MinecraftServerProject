@@ -15,6 +15,41 @@ For Windows users not using a WSL instance can find it useful to use the CLI com
 `aws configure set <variable> "value"`  
 `aws configure set aws_access_key_id "ABC123"`  
 ## Overview
+The goal of this project was to create an EC2 instance in AWS that ran a Minecraft server using infrastructure provisioning scripts. I chose to use Ansible and Pulumi, and followed a structure similar to Alexander Ulbrich's Wordpress demo (see References section). The idea is that there should be no interaction with the EC2 instance directly, meaning no ssh or use of the aws cli to directly interface with the instance. Instead I was tasked with setting up scripts to create and run the Minecraft server automatically with a single command. The server should also be restarted everytime the EC2 instance restarts to ensure that no sshing is required.  
+  
+I achieved this automation by creating a systemctl service file to load the minecraft server on start of the Debian instance. This creation and startup configuration is all handled by an Ansible playbook. The playbook also handles all other commands run on the remote, including installing Java and the Minecraft server jar file, as well as configuring the Minecraft server files. The core AWS management is handled by Pulumi which interfaces with AWS using the provided credentials and creates EC2, network, and keypair instances on your behalf through AWS. In my implementation I handed the specification of the instance type and the amount of RAM to be used for the service to the user. It is up to them to determine how much to provision on the budget they have.  
+  
+The defaults for the EC2 instance are detailed in the "How to launch" section.  
+  
+The user does not have the choice of OS however, I determined Debian as the best suited OS for this particular Minecraft server. Debian is highly compatible with most packages and has a long history of support behind it. It does not matter what region you choose the Debian AMI should be chosen correctly for you.  
+
+## How to launch
+Clone the repo through the `git clone` command or through Github by downloading the zip.  
+Before deploying the AWS Minecraft Server there are some initial configuration steps you must adhere to.  
+1. Create a new pulumi stack with `pulumi stack init` in a command window. (Pulumi may ask you to login, or create an account if don't already have one)  
+2. Generate the key that will be used to login to the EC2 instance with the `ssh-keygen` command, this will create a private a public key on the local machine. (Never share private keys).
+   ```bash
+   ssh-keygen -f minecraft-key
+   ```
+3. Now to configure some AWS values through pulumi.  
+   ```bash
+   pulumi config set aws:region us-east-1 # any AWS region, a full list can viewed here: https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html
+   pulumi config set publicKeyPath minecraft-key.pub # The public key generated in the previous step
+   pulumi config set privateKeyPath minecraft-key # The private key generated in the previous step
+   ```
+4. (Optional) There are some additional values that can be changed as part of the setup, although they are not required.
+   ```bash
+   pulumi config set mcserverEC2size t3.large # defaults to t3.medium (4GB RAM)
+   pulumi config set mcserverXMX 4096 # Size in MB. The max RAM available for the JVM, defaults to 3072MB
+   pulumi config set mcserverXMS 4096 # Size in MB. The staring RAM available for the JVM, defaults to 3072MB
+   ```
+   **Note:** XMX and XMS, do not set these higher than the available EC2 instance RAM. It will crash the JVM. Ensure you have the correct settings before continuing and you do not over-provision resources.  
+   **Additonal tip:** Set XMX and XMS equal to each other, since this EC2 instance will only be a Minecraft server there is no need to start the server with a lower RAM than the max. It is also common to set the max near or to the maximum system RAM, I would recommend against this as it can cause system crashing, but it's up to you.
+5. Now that all the configuration steps are done can deploy the system by running `pulumi up`. This command starts the creation of all the resources needed to run the server.  
+   You will be prompted if you want to continue `Do you want to perform this update? yes` select 'yes' from the options. Now the update will begin.
+   This may take some time ~5 mins, so be patience.
+   Once the script completes it will spit out some DNS and IP information.
+   
 
 
 ## References
