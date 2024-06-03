@@ -1,4 +1,4 @@
-# CS321 Project Part 2: Deploy a Minecraft Server to AWS EC2 using Pulumi and Ansible.
+# CS312 Project Part 2: Deploy a Minecraft Server to AWS EC2 using Pulumi and Ansible.
 How to deploy a Minecraft Server with Pulumi and Ansible to an AWS EC2 instance:
 ## Requirements
 * [Pulumi](https://www.pulumi.com/docs/install/)  
