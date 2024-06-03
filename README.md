@@ -68,5 +68,6 @@ And I hope you ..
 * [Alexander Ulbrich's Wordpress Demo](https://github.com/adulbrich/demo-pulumi-wordpress-ec2/?tab=readme-ov-file)  
 * [Pulumi AWS Networking setup guide](https://www.pulumi.com/ai/answers/oW1vyw8e4Xi8dFD9Q552Df/creating-ec2-instances-with-aws-networking)  
 * [Ansible Documentation](https://docs.ansible.com/)  
-* [Pulumi Documentation](https://www.pulumi.com/docs/)  
+* [Pulumi Documentation](https://www.pulumi.com/docs/)
+* [Pulumi Debian Setup](https://www.pulumi.com/ai/answers/493Zc8Z25H1SddFvuge5UN/managing-debian-repositories-with-ansible-in-python)
 * Alexander Ulbrich's OSU Computer Science 312 class notes and resources page.  
