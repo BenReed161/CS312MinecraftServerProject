@@ -13,6 +13,12 @@ const privateKey = pulumi.secret(fs.readFileSync(privateKeyPath).toString());
 
 const mcserverKeyPair = new aws.ec2.KeyPair("mcserver-keypair", {publicKey: publicKey});
 
+const mcserverEC2size = config.get("mcserverEC2size") || "t3.medium";
+
+//JVM maximum and mimimum memory pool RAM allocation, defaults to 3G of mem
+const mcserverXMX = config.get("mcserverXMX") || "3072";
+const mcserverXMS = config.get("mcserverXMS") || "3072";
+
 //https://www.pulumi.com/ai/answers/oW1vyw8e4Xi8dFD9Q552Df/creating-ec2-instances-with-aws-networking
 const securityGroup = new aws.ec2.SecurityGroup("mcserver-secgrp", {
   egress: [{
@@ -39,7 +45,7 @@ const securityGroup = new aws.ec2.SecurityGroup("mcserver-secgrp", {
 
 const mcserverInstance = new aws.ec2.Instance("mcserver-instance", {
   ami: "ami-0c2644caf041bb6de",
-  instanceType: aws.ec2.InstanceTypes.T2_Micro,
+  instanceType: mcserverEC2size,
 
   keyName: mcserverKeyPair.id,
 
@@ -70,7 +76,7 @@ const renderPlaybookCmd = new command.local.Command("renderPlaybookCmd", {
 
 //play the playbook
 const playAnsiblePlaybookCmd = new command.local.Command("playAnsiblePlaybookCmd", {
-    create: pulumi.interpolate`ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -u admin -i '${mcserverInstance.publicIp},' --private-key ${privateKeyPath} playbook_rendered.yml`,
+    create: pulumi.interpolate`ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -u admin -i '${mcserverInstance.publicIp},' --private-key ${privateKeyPath} playbook_rendered.yml --extra-vars "xmx=${mcserverXMX} xms=${mcserverXMS}"`,
     }, {
     dependsOn: [
         renderPlaybookCmd,

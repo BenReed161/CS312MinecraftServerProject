@@ -26,8 +26,8 @@
       url: 'https://piston-data.mojang.com/v1/objects/145ff0858209bcfc164859ba735d4199aafa1eea/server.jar'
       dest: '/home/admin'
 
-  - name: run the minecraft server
-    shell: java -Xmx512M -Xms512M -jar /home/admin/server.jar nogui
+  - name: run minecraft server startup
+    shell: java -Xmx'{{xmx}}'M -Xms'{{xms}}'M -jar /home/admin/server.jar nogui
   
   - name: edit eula.txt
     shell: sed -i 's/false/true/g' /home/admin/eula.txt
@@ -45,7 +45,7 @@
         [Service]
         Type=simple
         WorkingDirectory=/home/admin
-        ExecStart=/usr/bin/java -Xmx512M -Xmx512M -jar server.jar nogui
+        ExecStart=/usr/bin/java -Xmx'{{xmx}}'M -Xms'{{xms}}'M -jar server.jar nogui
 
         [Install]
         WantedBy=multi-user.target
